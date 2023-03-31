@@ -1,39 +1,98 @@
 # simple-go-docx
 
 #### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+golang 生成简单docx文档，纯文本样式
 
-#### 软件架构
-软件架构说明
+<br>
+
+#### 包结构
+
+~~~mermaid
+graph LR
+    A(simple-go-docx)--package-->B((docx))
+    A--dir-->C{{document}}--package-->D((document))
+    A--dir-->E{{paragraph}}--package-->F((paragraph))
+    A--dir-->G{{run}}--package-->H((run))
+    A--dir-->I{{styles}}--package-->J((styles))
+    A--dir-->K[(templates)]
+~~~
 
 
-#### 安装教程
+#### 安装
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+```go
+go get -u gitee.com/jn-qq/simple-go-docx
+```
+
+<br>
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+`simple-go-docx/test/test.go`
 
-#### 参与贡献
+```
+package main
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+import (
+   "gitee.com/jn-qq/simple-go-docx"
+   "path/filepath"
+   "runtime"
+)
+
+func main() {
+   // 创建docx文档对象
+   document := docx.NewDocx()
+
+   //添加段落
+   p1 := document.AddParagraph()
+   //设置段落格式
+   p1.IndFirst().Head(1)
+   // 添加文本
+   r1 := p1.AddRun("测试所有字体格式")
+   // 设置文本格式
+   r1.Size(10).Color("FF0000").Font("楷体").
+      Shade("clear", "auto", "E7E6E6").
+      Bold().Italic().Underline("wave").
+      Highlight("yellow")
+
+   // 添加文本
+   p1.AddRun("段落新增文本1")
+   p1.AddRun("段落新增文本2")
+
+   // 简单连写添加
+   document.AddParagraph().Head(2).XSpce(2).AddRun("段落2文本").Color("FF0000").Font("楷体")
+
+   // 自定义样式
+   // 声明样式对象
+   cs := document.NewCustomStyle("自定义段落样式", "paragraph")
+   // 设置具体样式
+   cs.CreatePPR().XSpce(2).IndFirst()
+   cs.CreateRPR().SetFont("楷体", "楷体", "楷体", "楷体", "eastAsia").SetColor(255, 0, 0).SetSize(10)
+   // 添加段落指定段落样式 Head 中的参数要-1
+   document.AddParagraph().Head(cs.Id - 1).AddRun("自定义段落样式")
+
+   // 添加字符样式
+   //cs := docx.NewCustomStyle("自定义段落样式", "character")
+   //添加属性。。。
+
+   _, path, _, _ := runtime.Caller(0)
+   path, _ = filepath.Split(path)
+
+   err := document.Save(filepath.Join(path, "test.docx"))
+   if err != nil {
+      panic(err)
+   }
+}
+```
+
+<br>
 
 
-#### 特技
+#### 参考
 
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+1. [go-docx](https://github.com/fumiama/go-docx)
+
+2. [ooxml](https://www.datypic.com/sc/ooxml)
+
+    
+
