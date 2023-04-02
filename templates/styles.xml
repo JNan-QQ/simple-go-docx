@@ -398,5 +398,150 @@
         <w:lsdException w:name="Unresolved Mention" w:semiHidden="1" w:unhideWhenUsed="1"/>
         <w:lsdException w:name="Smart Link" w:semiHidden="1" w:unhideWhenUsed="1"/>
     </w:latentStyles>
+    <w:style w:type="paragraph" w:default="1" w:styleId="1">
+        <w:name w:val="Normal"/>
+        <w:qFormat/>
+        <w:uiPriority w:val="0"/>
+        <w:pPr>
+            <w:widowControl w:val="0"/>
+            <w:jc w:val="both"/>
+        </w:pPr>
+        <w:rPr>
+            <w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:eastAsia="宋体" w:cs="Times New Roman"/>
+            <w:kern w:val="2"/>
+            <w:sz w:val="21"/>
+            <w:szCs w:val="24"/>
+            <w:lang w:val="en-US" w:eastAsia="zh-CN" w:bidi="ar-SA"/>
+        </w:rPr>
+    </w:style>
+    <w:style w:type="paragraph" w:styleId="2">
+        <w:name w:val="heading 1"/>
+        <w:basedOn w:val="1"/>
+        <w:next w:val="1"/>
+        <w:qFormat/>
+        <w:uiPriority w:val="9"/>
+        <w:pPr>
+            <w:keepNext/>
+            <w:keepLines/>
+            <w:spacing w:before="340" w:beforeLines="0" w:beforeAutospacing="0" w:after="330" w:afterLines="0" w:afterAutospacing="0" w:line="576" w:lineRule="auto"/>
+            <w:outlineLvl w:val="0"/>
+        </w:pPr>
+        <w:rPr>
+            <w:b/>
+            <w:kern w:val="44"/>
+            <w:sz w:val="44"/>
+        </w:rPr>
+    </w:style>
+    <w:style w:type="paragraph" w:styleId="3">
+        <w:name w:val="heading 2"/>
+        <w:basedOn w:val="1"/>
+        <w:next w:val="1"/>
+        <w:link w:val="10"/>
+        <w:semiHidden/>
+        <w:unhideWhenUsed/>
+        <w:qFormat/>
+        <w:uiPriority w:val="9"/>
+        <w:pPr>
+            <w:keepNext/>
+            <w:keepLines/>
+            <w:spacing w:before="260" w:beforeLines="0" w:beforeAutospacing="0" w:after="260" w:afterLines="0" w:afterAutospacing="0" w:line="413" w:lineRule="auto"/>
+            <w:outlineLvl w:val="1"/>
+        </w:pPr>
+        <w:rPr>
+            <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:eastAsia="黑体"/>
+            <w:b/>
+            <w:sz w:val="32"/>
+        </w:rPr>
+    </w:style>
+    <w:style w:type="paragraph" w:styleId="4">
+        <w:name w:val="heading 3"/>
+        <w:basedOn w:val="1"/>
+        <w:next w:val="1"/>
+        <w:link w:val="11"/>
+        <w:semiHidden/>
+        <w:unhideWhenUsed/>
+        <w:qFormat/>
+        <w:uiPriority w:val="9"/>
+        <w:pPr>
+            <w:keepNext/>
+            <w:keepLines/>
+            <w:spacing w:before="260" w:beforeLines="0" w:beforeAutospacing="0" w:after="260" w:afterLines="0" w:afterAutospacing="0" w:line="413" w:lineRule="auto"/>
+            <w:outlineLvl w:val="2"/>
+        </w:pPr>
+        <w:rPr>
+            <w:b/>
+            <w:sz w:val="32"/>
+        </w:rPr>
+    </w:style>
+    <w:style w:type="paragraph" w:styleId="5">
+        <w:name w:val="heading 4"/>
+        <w:basedOn w:val="1"/>
+        <w:next w:val="1"/>
+        <w:link w:val="12"/>
+        <w:semiHidden/>
+        <w:unhideWhenUsed/>
+        <w:qFormat/>
+        <w:uiPriority w:val="9"/>
+        <w:pPr>
+            <w:keepNext/>
+            <w:keepLines/>
+            <w:spacing w:before="280" w:beforeLines="0" w:beforeAutospacing="0" w:after="290" w:afterLines="0" w:afterAutospacing="0" w:line="372" w:lineRule="auto"/>
+            <w:outlineLvl w:val="3"/>
+        </w:pPr>
+        <w:rPr>
+            <w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:eastAsia="黑体"/>
+            <w:b/>
+            <w:sz w:val="28"/>
+        </w:rPr>
+    </w:style>
+    <w:style w:type="paragraph" w:styleId="6">
+        <w:name w:val="Normal (Web)"/>
+        <w:basedOn w:val="1"/>
+        <w:link w:val="13"/>
+        <w:qFormat/>
+        <w:uiPriority w:val="0"/>
+        <w:rPr>
+            <w:sz w:val="24"/>
+        </w:rPr>
+    </w:style>
+    <w:style w:type="table" w:default="1" w:styleId="7">
+        <w:name w:val="Normal Table"/>
+        <w:semiHidden/>
+        <w:unhideWhenUsed/>
+        <w:qFormat/>
+        <w:uiPriority w:val="99"/>
+        <w:tblPr>
+            <w:tblLayout w:type="fixed"/>
+            <w:tblCellMar>
+                <w:top w:w="0" w:type="dxa"/>
+                <w:left w:w="108" w:type="dxa"/>
+                <w:bottom w:w="0" w:type="dxa"/>
+                <w:right w:w="108" w:type="dxa"/>
+            </w:tblCellMar>
+        </w:tblPr>
+    </w:style>
+    <w:style w:type="table" w:styleId="8">
+        <w:name w:val="Table Grid"/>
+        <w:basedOn w:val="7"/>
+        <w:uiPriority w:val="39"/>
+        <w:tblPr>
+            <w:tblBorders>
+                <w:top w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                <w:left w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                <w:bottom w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                <w:right w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                <w:insideH w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+                <w:insideV w:val="single" w:color="auto" w:sz="4" w:space="0"/>
+            </w:tblBorders>
+            <w:tblLayout w:type="fixed"/>
+        </w:tblPr>
+    </w:style>
+    <w:style w:type="character" w:default="1" w:styleId="9">
+        <w:name w:val="Default Paragraph Font"/>
+        <w:semiHidden/>
+        <w:unhideWhenUsed/>
+        <w:qFormat/>
+        <w:uiPriority w:val="1"/>
+    </w:style>
     <w:customStyle>customStyle</w:customStyle>
 </w:styles>

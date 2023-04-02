@@ -23,7 +23,7 @@ type Docx struct {
 	workDir          string
 	templateFileList []string
 
-	customStyle []*styles.CustomStyle
+	defaultStyle map[string]styles.CustomStyle
 }
 
 // NewDocx 生成一个新的空 A4 docx 文件，我们可以对其进行操作和保存
@@ -31,35 +31,35 @@ func NewDocx() *Docx {
 	docx := &Docx{
 		Document: document.Document{
 			XMLName: xml.Name{Space: "w"},
-			XmlW:    document.XMLNS_W,
-			XmlR:    document.XMLNS_R,
-			XmlWp:   document.XMLNS_WP,
-			XmlWps:  document.XMLNS_WPS,
-			XmlWpc:  document.XMLNS_WPC,
-			XmlWpg:  document.XMLNS_WPG,
+			XmlW:    xmlnsW,
+			XmlR:    xmlnsR,
+			XmlWp:   xmlnsWp,
+			XmlWps:  xmlnsWps,
+			XmlWpc:  xmlnsWpc,
+			XmlWpg:  xmlnsWpg,
 			Body:    document.Body{Items: make([]interface{}, 0, 64)},
 		},
 		docRelation: document.Relationships{
-			Xmlns: document.XMLNS_REL,
+			Xmlns: xmlnsRel,
 			Relationship: []document.Relationship{
 				{
 					ID:     "rId1",
-					Type:   `http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles`,
+					Type:   relationshipId1,
 					Target: "styles.xml",
 				},
 				{
 					ID:     "rId2",
-					Type:   `http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme`,
+					Type:   relationshipId2,
 					Target: "theme/theme1.xml",
 				},
 				{
 					ID:     "rId3",
-					Type:   `http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable`,
+					Type:   relationshipId3,
 					Target: "fontTable.xml",
 				},
 			},
 		},
-		styleId:      10,
+		styleId:      7,
 		templateType: "A4",
 		templateFileList: []string{
 			"_rels/.rels",
@@ -70,6 +70,7 @@ func NewDocx() *Docx {
 			"word/styles.xml",
 			"[Content_Types].xml",
 		},
+		defaultStyle: new(styles.CustomStyle).DefaultStyle(),
 	}
 
 	return docx
@@ -78,8 +79,8 @@ func NewDocx() *Docx {
 // AddParagraph 添加段落
 func (d *Docx) AddParagraph() *paragraph.Paragraph {
 	p := &paragraph.Paragraph{
-		Items:      make([]interface{}, 0, 64),
-		Properties: &paragraph.Properties{},
+		Texts: make([]interface{}, 0, 64),
+		Style: &styles.ParagraphProperties{},
 	}
 	d.Document.Body.Items = append(d.Document.Body.Items, p)
 
@@ -99,9 +100,18 @@ func (d *Docx) Save(savePath string) error {
 	}
 	// 创建文件
 	docx, _ := os.Create(savePath)
+	defer func(docx *os.File) {
+		if err := docx.Close(); err != nil {
+			panic(err.Error())
+		}
+	}(docx)
 	// 创建zip写入对象
 	zipWriter := zip.NewWriter(docx)
-	defer zipWriter.Close()
+	defer func(zipWriter *zip.Writer) {
+		if err := zipWriter.Close(); err != nil {
+			panic(err.Error())
+		}
+	}(zipWriter)
 
 	// 添加模板文件
 	for _, path := range d.templateFileList {
@@ -109,7 +119,7 @@ func (d *Docx) Save(savePath string) error {
 		if err != nil {
 			return err
 		}
-		if path == "word/styles.xml" && len(d.customStyle) != 0 {
+		if path == "word/styles.xml" {
 			file = d.replaceNode(file)
 		}
 		d.addFileToZip(zipWriter, path, file)
@@ -132,22 +142,15 @@ func (d *Docx) Save(savePath string) error {
 	return nil
 }
 
-// NewCustomStyle 自定义样式
+// AddCustomStyle 添加样式
 //
-//	styleName 样式名称
 //	styleType 样式类型，可选：character|paragraph|tab|...
-func (d *Docx) NewCustomStyle(styleName string, styleType string) *styles.CustomStyle {
-	customStyle := &styles.CustomStyle{
-		Type:      styleType,
-		Id:        d.createStyleId(),
-		Flg:       "1",
-		StyleName: &styles.Name{Val: styleName},
-		Format:    &styles.Format{},
-	}
+func (d *Docx) AddCustomStyle(style styles.CustomStyle) int64 {
+	style.Id = d.styleId
+	defer func() { d.styleId += 1 }()
+	d.defaultStyle[style.StyleName.Val] = style
 
-	d.customStyle = append(d.customStyle, customStyle)
-
-	return customStyle
+	return d.styleId
 }
 
 func (d *Docx) createStyleId() (id int64) {
@@ -183,7 +186,7 @@ func (d *Docx) replaceNode(zipFile []byte) []byte {
 
 	var customStyle []byte
 	// 读取自定义样式
-	for _, cs := range d.customStyle {
+	for _, cs := range d.defaultStyle {
 		if marshal, err := xml.Marshal(cs); err == nil {
 			customStyle = append(customStyle, marshal...)
 		}
@@ -197,3 +200,23 @@ func (d *Docx) replaceNode(zipFile []byte) []byte {
 
 	return body
 }
+
+func (d *Docx) createDefaultStyle() {
+
+}
+
+//nolint:revive,style-check
+const (
+	xmlnsW   = `http://schemas.openxmlformats.org/wordprocessingml/2006/main`
+	xmlnsR   = `http://schemas.openxmlformats.org/officeDocument/2006/relationships`
+	xmlnsWp  = `http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing`
+	xmlnsWps = `http://schemas.microsoft.com/office/word/2010/wordprocessingShape`
+	xmlnsWpc = `http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas`
+	xmlnsWpg = `http://schemas.microsoft.com/office/word/2010/wordprocessingGroup`
+
+	xmlnsRel = `http://schemas.openxmlformats.org/package/2006/relationships`
+
+	relationshipId1 = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles`
+	relationshipId2 = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme`
+	relationshipId3 = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable`
+)
