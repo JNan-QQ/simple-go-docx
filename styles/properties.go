@@ -2,6 +2,7 @@ package styles
 
 import (
 	"encoding/xml"
+	"gitee.com/jn-qq/simple-go-docx/shared"
 )
 
 // fonts 字体类型
@@ -19,16 +20,16 @@ type spacing struct {
 	XMLName xml.Name `xml:"w:spacing,omitempty"`
 
 	// 文本字符间距调整
-	Val int `xml:"w:val,attr,omitempty"`
+	Val shared.Twip `xml:"w:val,attr,omitempty"`
 
 	// 段落
-	Before            int `xml:"w:before,attr,omitempty"`
-	BeforeLines       int `xml:"w:beforeLines,attr,omitempty"`
-	BeforeAutospacing int `xml:"w:beforeAutospacing,attr,omitempty"`
+	Before      shared.Twip `xml:"w:before,attr,omitempty"`
+	BeforeLines shared.Twip `xml:"w:beforeLines,attr,omitempty"`
+	BeforeAuto  shared.Twip `xml:"w:beforeAutospacing,attr,omitempty"`
 
-	After            int `xml:"w:after,attr,omitempty"`
-	AfterLines       int `xml:"w:afterLines,attr,omitempty"`
-	AfterAutospacing int `xml:"w:afterAutospacing,attr,omitempty"`
+	After      shared.Twip `xml:"w:after,attr,omitempty"`
+	AfterLines shared.Twip `xml:"w:afterLines,attr,omitempty"`
+	AfterAuto  shared.Twip `xml:"w:afterAutospacing,attr,omitempty"`
 
 	Line     int    `xml:"w:line,attr,omitempty"`
 	LineRule string `xml:"w:lineRule,attr,omitempty"`
@@ -39,17 +40,17 @@ type ind struct {
 	XMLName xml.Name `xml:"w:ind,omitempty"`
 
 	// 左缩进
-	LeftChars int `xml:"w:leftChars,attr,omitempty"`
-	Left      int `xml:"w:left,attr,omitempty"`
+	LeftChars shared.Twip `xml:"w:leftChars,attr,omitempty"`
+	Left      shared.Twip `xml:"w:left,attr,omitempty"`
 	// 右缩进
-	RightChars int `xml:"w:rightChars,attr,omitempty"`
-	Right      int `xml:"w:right,attr,omitempty"`
+	RightChars shared.Twip `xml:"w:rightChars,attr,omitempty"`
+	Right      shared.Twip `xml:"w:right,attr,omitempty"`
 	// 首行缩进
-	FirstLineChars int `xml:"w:firstLineChars,attr,omitempty"`
-	FirstLine      int `xml:"w:firstLine,attr,omitempty"`
+	FirstLineChars shared.Twip `xml:"w:firstLineChars,attr,omitempty"`
+	FirstLine      shared.Twip `xml:"w:firstLine,attr,omitempty"`
 	// 悬挂缩进
-	HangingChars int `xml:"w:hangingChars,attr,omitempty"`
-	Hanging      int `xml:"w:hanging,attr,omitempty"`
+	HangingChars shared.Twip `xml:"w:hangingChars,attr,omitempty"`
+	Hanging      shared.Twip `xml:"w:hanging,attr,omitempty"`
 }
 
 // justification 对齐方式
@@ -104,7 +105,7 @@ type rStyle struct {
 // pStyle 段落指定styleId
 type pStyle struct {
 	XMLName xml.Name `xml:"w:pStyle,omitempty"`
-	Val     string   `xml:"w:val,attr"`
+	Val     int64    `xml:"w:val,attr"`
 }
 
 // colors 颜色
@@ -115,14 +116,14 @@ type colors struct {
 
 // fontSize 大小
 type fontSize struct {
-	XMLName xml.Name `xml:"w:sz,omitempty"`
-	Val     int      `xml:"w:val,attr"`
+	XMLName xml.Name    `xml:"w:sz,omitempty"`
+	Val     shared.Twip `xml:"w:val,attr"`
 }
 
 // fontSizeCs 复杂样式大小
 type fontSizeCs struct {
-	XMLName xml.Name `xml:"w:szCs,omitempty"`
-	Val     int      `xml:"w:val,attr"`
+	XMLName xml.Name    `xml:"w:szCs,omitempty"`
+	Val     shared.Twip `xml:"w:val,attr"`
 }
 
 // bold 加粗
@@ -159,8 +160,8 @@ type highlight struct {
 
 // kern 字体字距
 type kern struct {
-	XMLName xml.Name `xml:"w:kern,omitempty"`
-	Val     int      `xml:"w:val,attr"`
+	XMLName xml.Name    `xml:"w:kern,omitempty"`
+	Val     shared.Twip `xml:"w:val,attr"`
 }
 
 // adjustRightInd 使用文档网格时自动调整右缩进

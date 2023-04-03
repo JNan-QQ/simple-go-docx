@@ -3,7 +3,6 @@ package styles
 import (
 	"encoding/xml"
 	"gitee.com/jn-qq/simple-go-docx/shared"
-	"strconv"
 	"strings"
 )
 
@@ -22,29 +21,29 @@ type CustomStyle struct {
 	link           *link
 	semiHidden     *semiHidden
 	unhideWhenUsed *unhideWhenUsed
-	PPR            *ParagraphProperties
-	RPR            *RunProperties
+	ParagraphStyle *ParagraphProperties
+	TextStyle      *RunProperties
 }
 
-// NewCustomStyle
+// NewCustomStyle 创建自定义样式
 //
 //	styleType 样式类型，可选：character|paragraph|tab|...
 func NewCustomStyle(name, styleType string) CustomStyle {
 	return CustomStyle{
-		Type:      styleType,
-		Flg:       "1",
-		StyleName: &StyleName{Val: name},
-		Format:    &Format{},
-		PPR:       &ParagraphProperties{},
-		RPR:       &RunProperties{},
+		Type:           styleType,
+		Flg:            "1",
+		StyleName:      &StyleName{Val: name},
+		Format:         &Format{},
+		ParagraphStyle: &ParagraphProperties{},
+		TextStyle:      &RunProperties{},
 	}
 }
 
-// DefaultStyle 添加段落样式对象
+// DefaultStyle 添加默认段落样式
 //
 //	系统调用
-func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
-	var defaultStyle = map[string]CustomStyle{
+func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
+	var defaultStyle = map[string]*CustomStyle{
 		"Normal": {
 			Type:       "paragraph",
 			Id:         1,
@@ -52,11 +51,11 @@ func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
 			StyleName:  &StyleName{Val: "Normal"},
 			Format:     &Format{},
 			uiPriority: &uiPriority{},
-			PPR: &ParagraphProperties{
+			ParagraphStyle: &ParagraphProperties{
 				WidowControl:  &widowControl{},
 				Justification: &justification{Val: shared.AlignArguments.Both},
 			},
-			RPR: &RunProperties{
+			TextStyle: &RunProperties{
 				Fonts: &fonts{
 					ASCII:    "Times DefaultStyle Roman",
 					EastAsia: "宋体",
@@ -82,22 +81,22 @@ func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
 			next:       &next{Val: 1},
 			Format:     &Format{},
 			uiPriority: &uiPriority{},
-			PPR: &ParagraphProperties{
+			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
 				keepLines: &keepLines{},
 				Spacing: &spacing{
-					Before:            340,
-					BeforeLines:       0,
-					BeforeAutospacing: 0,
-					After:             330,
-					AfterLines:        0,
-					AfterAutospacing:  0,
-					Line:              576,
-					LineRule:          "auto",
+					Before:      340,
+					BeforeLines: 0,
+					BeforeAuto:  0,
+					After:       330,
+					AfterLines:  0,
+					AfterAuto:   0,
+					Line:        576,
+					LineRule:    "auto",
 				},
 				outlineLvl: &outlineLvl{},
 			},
-			RPR: &RunProperties{
+			TextStyle: &RunProperties{
 				Bold: &bold{},
 				Kern: &kern{Val: 44},
 				Size: &fontSize{Val: 44},
@@ -114,22 +113,22 @@ func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
 			unhideWhenUsed: &unhideWhenUsed{},
 			Format:         &Format{},
 			uiPriority:     &uiPriority{Val: 9},
-			PPR: &ParagraphProperties{
+			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
 				keepLines: &keepLines{},
 				Spacing: &spacing{
-					Before:            260,
-					BeforeLines:       0,
-					BeforeAutospacing: 0,
-					After:             260,
-					AfterLines:        0,
-					AfterAutospacing:  0,
-					Line:              413,
-					LineRule:          "auto",
+					Before:      260,
+					BeforeLines: 0,
+					BeforeAuto:  0,
+					After:       260,
+					AfterLines:  0,
+					AfterAuto:   0,
+					Line:        413,
+					LineRule:    "auto",
 				},
 				outlineLvl: &outlineLvl{Val: 1},
 			},
-			RPR: &RunProperties{
+			TextStyle: &RunProperties{
 				Fonts: &fonts{
 					ASCII:    "Arial",
 					HAnsi:    "Arial",
@@ -150,22 +149,22 @@ func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
 			unhideWhenUsed: &unhideWhenUsed{},
 			Format:         &Format{},
 			uiPriority:     &uiPriority{Val: 9},
-			PPR: &ParagraphProperties{
+			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
 				keepLines: &keepLines{},
 				Spacing: &spacing{
-					Before:            260,
-					BeforeLines:       0,
-					BeforeAutospacing: 0,
-					After:             260,
-					AfterLines:        0,
-					AfterAutospacing:  0,
-					Line:              413,
-					LineRule:          "auto",
+					Before:      260,
+					BeforeLines: 0,
+					BeforeAuto:  0,
+					After:       260,
+					AfterLines:  0,
+					AfterAuto:   0,
+					Line:        413,
+					LineRule:    "auto",
 				},
 				outlineLvl: &outlineLvl{Val: 2},
 			},
-			RPR: &RunProperties{
+			TextStyle: &RunProperties{
 				Bold: &bold{},
 				Size: &fontSize{Val: 32},
 			},
@@ -181,22 +180,22 @@ func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
 			unhideWhenUsed: &unhideWhenUsed{},
 			Format:         &Format{},
 			uiPriority:     &uiPriority{Val: 9},
-			PPR: &ParagraphProperties{
+			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
 				keepLines: &keepLines{},
 				Spacing: &spacing{
-					Before:            280,
-					BeforeLines:       0,
-					BeforeAutospacing: 0,
-					After:             290,
-					AfterLines:        0,
-					AfterAutospacing:  0,
-					Line:              372,
-					LineRule:          "auto",
+					Before:      280,
+					BeforeLines: 0,
+					BeforeAuto:  0,
+					After:       290,
+					AfterLines:  0,
+					AfterAuto:   0,
+					Line:        372,
+					LineRule:    "auto",
 				},
 				outlineLvl: &outlineLvl{Val: 3},
 			},
-			RPR: &RunProperties{
+			TextStyle: &RunProperties{
 				Fonts: &fonts{
 					ASCII:    "Arial",
 					HAnsi:    "Arial",
@@ -219,18 +218,6 @@ func (c *CustomStyle) DefaultStyle() map[string]CustomStyle {
 	}
 
 	return defaultStyle
-}
-
-// ParagraphStyle 添加段落样式对象
-func (c *CustomStyle) ParagraphStyle() *ParagraphProperties {
-	c.PPR = &ParagraphProperties{}
-	return c.PPR
-}
-
-// TextStyle 添加文本样式对象
-func (c *CustomStyle) TextStyle() *RunProperties {
-	c.RPR = &RunProperties{}
-	return c.RPR
 }
 
 // RunProperties 文本样式
@@ -256,7 +243,7 @@ type RunProperties struct {
 
 // SetFont 设置文本字体
 //
-//	font 可以输入单个字体样式 或 依次属于ASCII，EastAsia，HAnsi，Cs，Hint样式
+//	font：可以输入单个字体样式 或 依次属于ASCII，EastAsia，HAnsi，Cs，Hint样式
 //
 //	Example:
 //		SetFont("楷体")
@@ -318,8 +305,9 @@ func (r *RunProperties) SetColor(color any) *RunProperties {
 
 // SetSize 字号
 //
-//	size: twip = shared.Cm() | shared.Mm() | shared.Pt() | shared.Inch() | shared.Wx()
-func (r *RunProperties) SetSize(size int) *RunProperties {
+//	size: shared.Twip 可选：
+//		shared.Cm() | shared.Mm() | shared.Pt() | shared.Inch() | shared.Wx()
+func (r *RunProperties) SetSize(size shared.Twip) *RunProperties {
 	r.Size = &fontSize{
 		Val: size / 10,
 	}
@@ -328,8 +316,7 @@ func (r *RunProperties) SetSize(size int) *RunProperties {
 
 // HighlightColor 高亮显示
 //
-//	color: red | yellow....
-//	shared.ColorLib
+//	color: 可输入标准颜色英文字符或直接在调用颜色库 shared.ColorLib 中的颜色
 func (r *RunProperties) HighlightColor(color any) *RunProperties {
 	var hexString string
 
@@ -357,7 +344,7 @@ func (r *RunProperties) SetItalic() *RunProperties {
 // SetSpace 字符间距调整
 //
 //	size: twip = shared.Cm() | shared.Mm() | shared.Pt() | shared.Inch() | shared.Wx()
-func (r *RunProperties) SetSpace(size int) *RunProperties {
+func (r *RunProperties) SetSpace(size shared.Twip) *RunProperties {
 	r.Spacing = &spacing{Val: size}
 	return r
 }
@@ -408,12 +395,20 @@ type ParagraphProperties struct {
 }
 
 // SetHead 设置标题级别
-func (p *ParagraphProperties) SetHead(lv int64) *ParagraphProperties {
-	p.PStyle = &pStyle{Val: strconv.FormatInt(lv+1, 10)}
+//
+//	styleId：自定义样式或默认样式id，默认如下：
+//		Normal   	：1
+//		heading 1	：2
+//		heading 2	：3
+//		heading 3	：4
+//		heading 4	：5
+//		character	：6
+func (p *ParagraphProperties) SetHead(styleId int64) *ParagraphProperties {
+	p.PStyle = &pStyle{Val: styleId}
 	return p
 }
 
-// IndFirst 首行缩进
+// IndFirst 首行缩进,默认2字符
 func (p *ParagraphProperties) IndFirst() *ParagraphProperties {
 	p.Ind = &ind{
 		FirstLineChars: 2 * 100,
@@ -421,7 +416,7 @@ func (p *ParagraphProperties) IndFirst() *ParagraphProperties {
 	return p
 }
 
-// IndHang 悬挂缩进
+// IndHang 悬挂缩进，默认2字符
 func (p *ParagraphProperties) IndHang() *ParagraphProperties {
 	p.Ind = &ind{
 		HangingChars: 2 * 100,
@@ -431,28 +426,24 @@ func (p *ParagraphProperties) IndHang() *ParagraphProperties {
 
 // IndCustom 自定义缩进
 //
-//		ind = struct {
-//		// 左缩进
-//		LeftChars int `xml:"w:leftChars,attr,omitempty"`
-//		// 右缩进
-//		RightChars int `xml:"w:rightChars,attr,omitempty"`
-//		// 首行缩进
-//		FirstLineChars int `xml:"w:firstLineChars,attr,omitempty"`
-//		// 悬挂缩进
-//		HangingChars int `xml:"w:hangingChars,attr,omitempty"`
-//	}
-func (p *ParagraphProperties) IndCustom(ind ind) *ParagraphProperties {
-	p.Ind = &ind
+//	leftChars：左缩进字符数量 shared.Char()
+//	rightChars：右缩进字符数量 shared.Char()
+func (p *ParagraphProperties) IndCustom(leftChars, rightChars shared.Twip) *ParagraphProperties {
+	p.Ind = &ind{
+		LeftChars:  leftChars,
+		RightChars: rightChars,
+	}
 	return p
 }
 
 // LineSpce 设置行间距
-func (p *ParagraphProperties) LineSpce(before, after int) *ParagraphProperties {
+//
+//	before：段前间距行数 shared.line()
+//	after：段后间距行数 shared.line()
+func (p *ParagraphProperties) LineSpce(before, after shared.Twip) *ParagraphProperties {
 	p.Spacing = &spacing{
-		Before:      before * 312,
-		BeforeLines: before * 100,
-		After:       after * 312,
-		AfterLines:  after * 100,
+		BeforeLines: before,
+		AfterLines:  after,
 	}
 	return p
 }

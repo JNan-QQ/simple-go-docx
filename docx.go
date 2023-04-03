@@ -23,7 +23,7 @@ type Docx struct {
 	workDir          string
 	templateFileList []string
 
-	defaultStyle map[string]styles.CustomStyle
+	defaultStyle map[string]*styles.CustomStyle
 }
 
 // NewDocx 生成一个新的空 A4 docx 文件，我们可以对其进行操作和保存
@@ -76,7 +76,7 @@ func NewDocx() *Docx {
 	return docx
 }
 
-// AddParagraph 添加段落
+// AddParagraph 添加段落,可对该段落设置样式
 func (d *Docx) AddParagraph() *paragraph.Paragraph {
 	p := &paragraph.Paragraph{
 		Texts: make([]interface{}, 0, 64),
@@ -91,6 +91,9 @@ func (d *Docx) AddParagraph() *paragraph.Paragraph {
 	return p
 }
 
+// Save 保存docx文档
+//
+//	savePath：文档保存路径，仅支持.docx文档
 func (d *Docx) Save(savePath string) error {
 	if _, err := os.Stat(savePath); err == nil {
 		// 删除旧文件
@@ -142,10 +145,23 @@ func (d *Docx) Save(savePath string) error {
 	return nil
 }
 
-// AddCustomStyle 添加样式
+// AddCustomStyle 添加自定义样式
 //
 //	styleType 样式类型，可选：character|paragraph|tab|...
-func (d *Docx) AddCustomStyle(style styles.CustomStyle) int64 {
+//
+//	example:
+//		// 创建自定义样式对象
+//		style := styles.NewCustomStyle("自定义样式1", "paragraph")
+//		style.ParagraphStyle.IndFirst().XLineSpce(2)
+//		style.TextStyle.SetFont("楷体").SetSize(shared.Pt(20)).SetColor(shared.ColorLib.Blue)
+//		// 添加声明样式 获取id
+//		sid := document.AddCustomStyle(style)
+//
+//		//添加段落指定段落样式 Head 中的参数要-1
+//		p := document.AddParagraph()
+//		p.Style.SetHead(sid - 1)
+//		p.AddText("自定义段落样式")
+func (d *Docx) AddCustomStyle(style *styles.CustomStyle) int64 {
 	style.Id = d.styleId
 	defer func() { d.styleId += 1 }()
 	d.defaultStyle[style.StyleName.Val] = style
@@ -153,6 +169,16 @@ func (d *Docx) AddCustomStyle(style styles.CustomStyle) int64 {
 	return d.styleId
 }
 
+// GetStyle 获取已存在的样式
+func (d *Docx) GetStyle(styleName string, styleType ...string) *styles.CustomStyle {
+	if style, ok := d.defaultStyle[styleName]; ok {
+		return style
+	} else {
+		panic("样式不存在请创建！")
+	}
+}
+
+// 生成样式id
 func (d *Docx) createStyleId() (id int64) {
 	id = d.styleId
 	d.styleId += 1
@@ -182,6 +208,7 @@ func (d *Docx) addFileToZip(zipWriter *zip.Writer, zipFilePath string, streamOrP
 	}
 }
 
+// 替换xml-node节点
 func (d *Docx) replaceNode(zipFile []byte) []byte {
 
 	var customStyle []byte
@@ -199,10 +226,6 @@ func (d *Docx) replaceNode(zipFile []byte) []byte {
 	body := re.ReplaceAll(zipFile, customStyle)
 
 	return body
-}
-
-func (d *Docx) createDefaultStyle() {
-
 }
 
 //nolint:revive,style-check

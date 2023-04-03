@@ -12,6 +12,10 @@ func main() {
 	// 创建docx文档对象
 	document := docx.NewDocx()
 
+	// 修改默认样式
+	defaultStyle := document.GetStyle("Normal")
+	defaultStyle.TextStyle.SetFont("楷体")
+
 	//添加段落
 	p1 := document.AddParagraph()
 	//设置段落格式
@@ -35,14 +39,14 @@ func main() {
 	// 自定义样式
 	style := styles.NewCustomStyle("自定义样式1", "paragraph")
 	// 设置具体样式
-	style.PPR.IndFirst().XLineSpce(2)
-	style.RPR.SetFont("楷体").SetSize(shared.Pt(20)).SetColor(shared.ColorLib.Blue)
+	style.ParagraphStyle.IndFirst().XLineSpce(2)
+	style.TextStyle.SetFont("楷体").SetSize(shared.Pt(20)).SetColor(shared.ColorLib.Blue)
 	// 添加声明样式 获取id
-	sid := document.AddCustomStyle(style)
+	sid := document.AddCustomStyle(&style)
 
-	// 添加段落指定段落样式 Head 中的参数要-1
+	// 添加段落指定段落样式
 	p3 := document.AddParagraph()
-	p3.Style.SetHead(sid - 1)
+	p3.Style.SetHead(sid)
 	p3.AddText("自定义段落样式")
 
 	// 添加字符样式
