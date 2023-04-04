@@ -104,15 +104,17 @@ func (d *Docx) Save(savePath string) error {
 	// 创建文件
 	docx, _ := os.Create(savePath)
 	defer func(docx *os.File) {
-		if err := docx.Close(); err != nil {
-			panic(err.Error())
+		err := docx.Close()
+		if err != nil {
+			panic("docx文档未正常关闭！")
 		}
 	}(docx)
+
 	// 创建zip写入对象
 	zipWriter := zip.NewWriter(docx)
 	defer func(zipWriter *zip.Writer) {
 		if err := zipWriter.Close(); err != nil {
-			panic(err.Error())
+			panic("压缩包文件未正常关闭")
 		}
 	}(zipWriter)
 
@@ -125,22 +127,30 @@ func (d *Docx) Save(savePath string) error {
 		if path == "word/styles.xml" {
 			file = d.replaceNode(file)
 		}
-		d.addFileToZip(zipWriter, path, file)
+
+		if err := d.addFileToZip(zipWriter, path, file);err != nil {
+			return err
+		}
 	}
 
 	// 添加 word/_rels/document.xml.rels
 	if marshal, err := xml.Marshal(d.docRelation); err != nil {
 		return err
 	} else {
-		d.addFileToZip(zipWriter, "word/_rels/document.xml.rels", marshal)
+		if err := d.addFileToZip(zipWriter, "word/_rels/document.xml.rels", marshal);err != nil {
+			return err
+		}
 	}
 
 	// 添加 word/document.xml
 	if marshal, err := xml.Marshal(d.Document); err != nil {
 		return err
 	} else {
-		d.addFileToZip(zipWriter, "word/document.xml", marshal)
+		if err := d.addFileToZip(zipWriter, "word/document.xml", marshal);err != nil {
+			return err
+		}
 	}
+
 
 	return nil
 }
@@ -152,7 +162,7 @@ func (d *Docx) Save(savePath string) error {
 //	example:
 //		// 创建自定义样式对象
 //		style := styles.NewCustomStyle("自定义样式1", "paragraph")
-//		style.ParagraphStyle.IndFirst().XLineSpce(2)
+//		style.ParagraphStyle.IndFirst().XLineSpace(2)
 //		style.TextStyle.SetFont("楷体").SetSize(shared.Pt(20)).SetColor(shared.ColorLib.Blue)
 //		// 添加声明样式 获取id
 //		sid := document.AddCustomStyle(style)
@@ -170,7 +180,7 @@ func (d *Docx) AddCustomStyle(style *styles.CustomStyle) int64 {
 }
 
 // GetStyle 获取已存在的样式
-func (d *Docx) GetStyle(styleName string, styleType ...string) *styles.CustomStyle {
+func (d *Docx) GetStyle(styleName string) *styles.CustomStyle {
 	if style, ok := d.defaultStyle[styleName]; ok {
 		return style
 	} else {
@@ -186,12 +196,12 @@ func (d *Docx) createStyleId() (id int64) {
 }
 
 // 向zip对象中添加文件
-func (d *Docx) addFileToZip(zipWriter *zip.Writer, zipFilePath string, streamOrPath any) {
+func (d *Docx) addFileToZip(zipWriter *zip.Writer, zipFilePath string, streamOrPath any) error {
 
 	//创建压缩文件对象
 	f, err := zipWriter.Create(zipFilePath)
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 
 	// 写入
@@ -199,13 +209,14 @@ func (d *Docx) addFileToZip(zipWriter *zip.Writer, zipFilePath string, streamOrP
 	case string:
 		p, _ := os.ReadFile(t)
 		if _, err = f.Write(p); err != nil {
-			panic(err.Error())
+			return err
 		}
 	case []byte:
 		if _, err = f.Write(t); err != nil {
-			panic(err.Error())
+			return err
 		}
 	}
+	return nil
 }
 
 // 替换xml-node节点

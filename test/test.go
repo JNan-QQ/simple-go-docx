@@ -33,13 +33,13 @@ func main() {
 
 	// 简单连写添加
 	p2 := document.AddParagraph()
-	p2.Style.SetHead(2).XLineSpce(2)
+	p2.Style.SetHead(2).XLineSpace(2)
 	p2.AddText("段落2文本").Style.SetColor("FF0000").SetFont("楷体")
 
 	// 自定义样式
 	style := styles.NewCustomStyle("自定义样式1", "paragraph")
 	// 设置具体样式
-	style.ParagraphStyle.IndFirst().XLineSpce(2)
+	style.ParagraphStyle.IndFirst().XLineSpace(2)
 	style.TextStyle.SetFont("楷体").SetSize(shared.Pt(20)).SetColor(shared.ColorLib.Blue)
 	// 添加声明样式 获取id
 	sid := document.AddCustomStyle(&style)

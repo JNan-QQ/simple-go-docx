@@ -436,11 +436,11 @@ func (p *ParagraphProperties) IndCustom(leftChars, rightChars shared.Twip) *Para
 	return p
 }
 
-// LineSpce 设置行间距
+// LineSpace 设置行间距
 //
 //	before：段前间距行数 shared.line()
 //	after：段后间距行数 shared.line()
-func (p *ParagraphProperties) LineSpce(before, after shared.Twip) *ParagraphProperties {
+func (p *ParagraphProperties) LineSpace(before, after shared.Twip) *ParagraphProperties {
 	p.Spacing = &spacing{
 		BeforeLines: before,
 		AfterLines:  after,
@@ -448,8 +448,8 @@ func (p *ParagraphProperties) LineSpce(before, after shared.Twip) *ParagraphProp
 	return p
 }
 
-// XLineSpce 设置x倍行距
-func (p *ParagraphProperties) XLineSpce(x float64) *ParagraphProperties {
+// XLineSpace 设置x倍行距
+func (p *ParagraphProperties) XLineSpace(x float64) *ParagraphProperties {
 	p.Spacing = &spacing{
 		Line:     int(240 * x),
 		LineRule: "auto",
@@ -464,92 +464,5 @@ func (p *ParagraphProperties) XLineSpce(x float64) *ParagraphProperties {
 func (p *ParagraphProperties) Align(align string) *ParagraphProperties {
 	p.Justification = &justification{Val: align}
 	p.TextAlignment = &textAlignment{Val: "auto"}
-	return p
-}
-
-// SetFont 设置文本字体
-//
-//	font：可以输入单个字体样式 或 依次属于ASCII，EastAsia，HAnsi，Cs，Hint样式
-//
-//	Example:
-//		SetFont("楷体")
-//		SetFont("楷体", "楷体", "楷体", "楷体", "eastAsia")
-func (p *ParagraphProperties) SetFont(font ...string) *ParagraphProperties {
-	if p.RPR == nil {
-		p.RPR = &RunProperties{}
-	}
-	if len(font) == 1 {
-		p.RPR.Fonts = &fonts{
-			ASCII:    font[0],
-			EastAsia: font[0],
-			HAnsi:    font[0],
-			Cs:       font[0],
-			Hint:     "eastAsia",
-		}
-	} else {
-		p.RPR.Fonts = &fonts{
-			ASCII:    font[0],
-			EastAsia: font[1],
-			HAnsi:    font[2],
-			Cs:       font[3],
-			Hint:     font[4],
-		}
-	}
-	return p
-}
-
-// SetBold 设置粗体
-func (p *ParagraphProperties) SetBold() *ParagraphProperties {
-	if p.RPR == nil {
-		p.RPR = &RunProperties{}
-	}
-	p.RPR.Bold = &bold{}
-	p.RPR.BCs = &boldCs{}
-	return p
-}
-
-// SetColor 设置字体颜色
-//
-//	color: shared.RGB , 000000-FFFFFF, shared.ColorLib.Red
-func (p *ParagraphProperties) SetColor(color any) *ParagraphProperties {
-	var hexString string
-
-	switch t := color.(type) {
-	case string:
-		// 输入16进制颜色值
-		hexString = strings.ToUpper(strings.ReplaceAll(t, "#", ""))
-		if len(hexString) != 6 || hexString < "000000" || hexString > "FFFFFF" {
-			panic("不支持的颜色格式")
-		}
-	case shared.RGB:
-		hexString = t.RGBColor()
-	case [2]string:
-		hexString = t[0]
-	default:
-		hexString = "FF0000"
-	}
-
-	if p.RPR == nil {
-		p.RPR = &RunProperties{}
-	}
-
-	p.RPR.Color = &colors{
-		Val: hexString,
-	}
-
-	return p
-}
-
-// SetSize 字号
-//
-//	size: shared.Twip 可选：
-//		shared.Cm() | shared.Mm() | shared.Pt() | shared.Inch() | shared.Wx()
-func (p *ParagraphProperties) SetSize(size shared.Twip) *ParagraphProperties {
-	if p.RPR == nil {
-		p.RPR = &RunProperties{}
-	}
-	p.RPR.Size = &fontSize{
-		Val: size / 10,
-	}
 	return p
 }
