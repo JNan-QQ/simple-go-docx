@@ -73,6 +73,10 @@ func NewDocx() *Docx {
 		defaultStyle: new(styles.CustomStyle).DefaultStyle(),
 	}
 
+	// 获取当前文件路径
+	_, path, _, _ := runtime.Caller(0)
+	docx.workDir, _ = filepath.Split(path)
+
 	return docx
 }
 
@@ -83,10 +87,6 @@ func (d *Docx) AddParagraph() *paragraph.Paragraph {
 		Style: &styles.ParagraphProperties{},
 	}
 	d.Document.Body.Items = append(d.Document.Body.Items, p)
-
-	// 获取当前文件路径
-	_, path, _, _ := runtime.Caller(0)
-	d.workDir, _ = filepath.Split(path)
 
 	return p
 }
