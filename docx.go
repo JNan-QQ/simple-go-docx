@@ -7,9 +7,7 @@ import (
 	"gitee.com/jn-qq/simple-go-docx/paragraph"
 	"gitee.com/jn-qq/simple-go-docx/styles"
 	"os"
-	"path/filepath"
 	"regexp"
-	"runtime"
 )
 
 type Docx struct {
@@ -20,7 +18,6 @@ type Docx struct {
 	styleId int64
 
 	templateType     string
-	workDir          string
 	templateFileList []string
 
 	defaultStyle map[string]*styles.CustomStyle
@@ -59,23 +56,11 @@ func NewDocx() *Docx {
 				},
 			},
 		},
-		styleId:      7,
-		templateType: "A4",
-		templateFileList: []string{
-			"_rels/.rels",
-			"docProps/app.xml",
-			"docProps/core.xml",
-			"word/theme/theme1.xml",
-			"word/fontTable.xml",
-			"word/styles.xml",
-			"[Content_Types].xml",
-		},
-		defaultStyle: new(styles.CustomStyle).DefaultStyle(),
+		styleId:          7,
+		templateType:     "A4",
+		templateFileList: templateFiles,
+		defaultStyle:     new(styles.CustomStyle).DefaultStyle(),
 	}
-
-	// 获取当前文件路径
-	_, path, _, _ := runtime.Caller(0)
-	docx.workDir, _ = filepath.Split(path)
 
 	return docx
 }
@@ -120,7 +105,7 @@ func (d *Docx) Save(savePath string) error {
 
 	// 添加模板文件
 	for _, path := range d.templateFileList {
-		file, err := os.ReadFile(filepath.Join(d.workDir, "templates", d.templateType, path))
+		file, err := templateFS.ReadFile("templates/" + d.templateType + "/" + path)
 		if err != nil {
 			return err
 		}
@@ -128,7 +113,7 @@ func (d *Docx) Save(savePath string) error {
 			file = d.replaceNode(file)
 		}
 
-		if err := d.addFileToZip(zipWriter, path, file);err != nil {
+		if err := d.addFileToZip(zipWriter, path, file); err != nil {
 			return err
 		}
 	}
@@ -137,7 +122,7 @@ func (d *Docx) Save(savePath string) error {
 	if marshal, err := xml.Marshal(d.docRelation); err != nil {
 		return err
 	} else {
-		if err := d.addFileToZip(zipWriter, "word/_rels/document.xml.rels", marshal);err != nil {
+		if err := d.addFileToZip(zipWriter, "word/_rels/document.xml.rels", marshal); err != nil {
 			return err
 		}
 	}
@@ -146,11 +131,10 @@ func (d *Docx) Save(savePath string) error {
 	if marshal, err := xml.Marshal(d.Document); err != nil {
 		return err
 	} else {
-		if err := d.addFileToZip(zipWriter, "word/document.xml", marshal);err != nil {
+		if err := d.addFileToZip(zipWriter, "word/document.xml", marshal); err != nil {
 			return err
 		}
 	}
-
 
 	return nil
 }

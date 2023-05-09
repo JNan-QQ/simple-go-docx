@@ -1,16 +1,16 @@
-package main
+package docx
 
 import (
-	"gitee.com/jn-qq/simple-go-docx"
 	"gitee.com/jn-qq/simple-go-docx/shared"
 	"gitee.com/jn-qq/simple-go-docx/styles"
 	"path/filepath"
 	"runtime"
+	"testing"
 )
 
-func main() {
+func TestDocx(t *testing.T) {
 	// 创建docx文档对象
-	document := docx.NewDocx()
+	document := NewDocx()
 
 	// 修改默认样式
 	defaultStyle := document.GetStyle("Normal")
@@ -60,5 +60,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 }

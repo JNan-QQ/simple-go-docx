@@ -28,22 +28,11 @@ go get -u gitee.com/jn-qq/simple-go-docx
 
 #### 使用说明
 
-`simple-go-docx/test/test.go`
+`simple-go-docx/docx_test.go`
 
 ```
-package main
-
-import (
-	"gitee.com/jn-qq/simple-go-docx"
-	"gitee.com/jn-qq/simple-go-docx/shared"
-	"gitee.com/jn-qq/simple-go-docx/styles"
-	"path/filepath"
-	"runtime"
-)
-
-func main() {
-	// 创建docx文档对象
-	document := docx.NewDocx()
+    // 创建docx文档对象
+	document := NewDocx()
 
 	// 修改默认样式
 	defaultStyle := document.GetStyle("Normal")
@@ -93,8 +82,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-}
 
 ```
 
