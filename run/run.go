@@ -14,6 +14,8 @@ type Run struct {
 	InstrText string `xml:"w:instrText,omitempty"`
 
 	Text string `xml:"w:t"`
+
+	Image any
 }
 
 // SetText 设置文本

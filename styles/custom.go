@@ -14,8 +14,8 @@ type CustomStyle struct {
 	DefaultId      int64    `xml:"w:default,attr,omitempty"`
 	Flg            string   `xml:"w:customStyle,attr,omitempty"`
 	uiPriority     *uiPriority
-	StyleName      *StyleName
-	Format         *Format
+	StyleName      *styleName
+	Format         *format
 	basedOn        *basedOn
 	next           *next
 	link           *link
@@ -32,8 +32,8 @@ func NewCustomStyle(name, styleType string) CustomStyle {
 	return CustomStyle{
 		Type:           styleType,
 		Flg:            "1",
-		StyleName:      &StyleName{Val: name},
-		Format:         &Format{},
+		StyleName:      &styleName{Val: name},
+		Format:         &format{},
 		ParagraphStyle: &ParagraphProperties{},
 		TextStyle:      &RunProperties{},
 	}
@@ -48,8 +48,8 @@ func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
 			Type:       "paragraph",
 			Id:         1,
 			DefaultId:  1,
-			StyleName:  &StyleName{Val: "Normal"},
-			Format:     &Format{},
+			StyleName:  &styleName{Val: "Normal"},
+			Format:     &format{},
 			uiPriority: &uiPriority{},
 			ParagraphStyle: &ParagraphProperties{
 				WidowControl:  &widowControl{},
@@ -76,10 +76,10 @@ func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
 		"heading 1": {
 			Type:       "paragraph",
 			Id:         2,
-			StyleName:  &StyleName{Val: "heading 1"},
+			StyleName:  &styleName{Val: "heading 1"},
 			basedOn:    &basedOn{Val: 1},
 			next:       &next{Val: 1},
-			Format:     &Format{},
+			Format:     &format{},
 			uiPriority: &uiPriority{},
 			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
@@ -105,13 +105,13 @@ func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
 		"heading 2": {
 			Type:           "paragraph",
 			Id:             3,
-			StyleName:      &StyleName{Val: "heading 2"},
+			StyleName:      &styleName{Val: "heading 2"},
 			basedOn:        &basedOn{Val: 1},
 			next:           &next{Val: 1},
 			link:           &link{Val: 10},
 			semiHidden:     &semiHidden{},
 			unhideWhenUsed: &unhideWhenUsed{},
-			Format:         &Format{},
+			Format:         &format{},
 			uiPriority:     &uiPriority{Val: 9},
 			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
@@ -141,13 +141,13 @@ func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
 		"heading 3": {
 			Type:           "paragraph",
 			Id:             4,
-			StyleName:      &StyleName{Val: "heading 3"},
+			StyleName:      &styleName{Val: "heading 3"},
 			basedOn:        &basedOn{Val: 1},
 			next:           &next{Val: 1},
 			link:           &link{Val: 11},
 			semiHidden:     &semiHidden{},
 			unhideWhenUsed: &unhideWhenUsed{},
-			Format:         &Format{},
+			Format:         &format{},
 			uiPriority:     &uiPriority{Val: 9},
 			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
@@ -172,13 +172,13 @@ func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
 		"heading 4": {
 			Type:           "paragraph",
 			Id:             5,
-			StyleName:      &StyleName{Val: "heading 4"},
+			StyleName:      &styleName{Val: "heading 4"},
 			basedOn:        &basedOn{Val: 1},
 			next:           &next{Val: 1},
 			link:           &link{Val: 12},
 			semiHidden:     &semiHidden{},
 			unhideWhenUsed: &unhideWhenUsed{},
-			Format:         &Format{},
+			Format:         &format{},
 			uiPriority:     &uiPriority{Val: 9},
 			ParagraphStyle: &ParagraphProperties{
 				keepNext:  &keepNext{},
@@ -209,10 +209,10 @@ func (c *CustomStyle) DefaultStyle() map[string]*CustomStyle {
 			Type:           "character",
 			Id:             6,
 			DefaultId:      1,
-			StyleName:      &StyleName{Val: "Default Paragraph Font"},
+			StyleName:      &styleName{Val: "Default Paragraph Font"},
 			semiHidden:     &semiHidden{},
 			unhideWhenUsed: &unhideWhenUsed{},
-			Format:         &Format{},
+			Format:         &format{},
 			uiPriority:     &uiPriority{Val: 1},
 		},
 	}
@@ -244,10 +244,6 @@ type RunProperties struct {
 // SetFont 设置文本字体
 //
 //	font：可以输入单个字体样式 或 依次属于ASCII，EastAsia，HAnsi，Cs，Hint样式
-//
-//	Example:
-//		SetFont("楷体")
-//		SetFont("楷体", "楷体", "楷体", "楷体", "eastAsia")
 func (r *RunProperties) SetFont(font ...string) *RunProperties {
 	if len(font) == 1 {
 		r.Fonts = &fonts{

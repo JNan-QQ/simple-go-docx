@@ -3,7 +3,9 @@ package docx
 import (
 	"archive/zip"
 	"encoding/xml"
+	"fmt"
 	"gitee.com/jn-qq/simple-go-docx/document"
+	"gitee.com/jn-qq/simple-go-docx/image"
 	"gitee.com/jn-qq/simple-go-docx/paragraph"
 	"gitee.com/jn-qq/simple-go-docx/styles"
 	"os"
@@ -34,6 +36,8 @@ func NewDocx() *Docx {
 			XmlWps:  xmlnsWps,
 			XmlWpc:  xmlnsWpc,
 			XmlWpg:  xmlnsWpg,
+			XmlPic:  xmlnsPic,
+			XmlA:    xmlnsA,
 			Body:    document.Body{Items: make([]interface{}, 0, 64)},
 		},
 		docRelation: document.Relationships{
@@ -74,6 +78,42 @@ func (d *Docx) AddParagraph() *paragraph.Paragraph {
 	d.Document.Body.Items = append(d.Document.Body.Items, p)
 
 	return p
+}
+
+// UploadImages 批量上传图片
+//
+//	q: 图片质量 1-100，默认100
+func (d *Docx) UploadImages(quality int, imgList ...*image.Image) error {
+
+	if quality < 1 || quality > 100 {
+		quality = 100
+	}
+
+	for _, img := range imgList {
+		if img.Name == "" {
+			return fmt.Errorf("请为图片添加名称标识")
+		}
+		// 格式化图片二进制数据
+		if err := img.Down(quality); err != nil {
+			return err
+		}
+		// 设置关系id
+		img.SetId(fmt.Sprintf("rId%d", len(d.docRelation.Relationship)+1))
+
+		// 保存数据
+		image.ImagesList[img.Name] = img
+
+		// 写入关系映射
+		d.docRelation.Relationship = append(
+			d.docRelation.Relationship,
+			document.Relationship{
+				ID:     img.GetId(),
+				Type:   imageRelationship,
+				Target: "media/" + img.Name + ".jpeg",
+			},
+		)
+	}
+	return nil
 }
 
 // Save 保存docx文档
@@ -136,25 +176,19 @@ func (d *Docx) Save(savePath string) error {
 		}
 	}
 
+	// 向 word/media 文件夹中添加图片
+	for name, img := range image.ImagesList {
+		if err := d.addFileToZip(zipWriter, "word/media/"+name+".jpeg", img.Bytes); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 // AddCustomStyle 添加自定义样式
 //
 //	styleType 样式类型，可选：character|paragraph|tab|...
-//
-//	example:
-//		// 创建自定义样式对象
-//		style := styles.NewCustomStyle("自定义样式1", "paragraph")
-//		style.ParagraphStyle.IndFirst().XLineSpace(2)
-//		style.TextStyle.SetFont("楷体").SetSize(shared.Pt(20)).SetColor(shared.ColorLib.Blue)
-//		// 添加声明样式 获取id
-//		sid := document.AddCustomStyle(style)
-//
-//		//添加段落指定段落样式 Head 中的参数要-1
-//		p := document.AddParagraph()
-//		p.Style.SetHead(sid - 1)
-//		p.AddText("自定义段落样式")
 func (d *Docx) AddCustomStyle(style *styles.CustomStyle) int64 {
 	style.Id = d.styleId
 	defer func() { d.styleId += 1 }()
@@ -231,10 +265,14 @@ const (
 	xmlnsWps = `http://schemas.microsoft.com/office/word/2010/wordprocessingShape`
 	xmlnsWpc = `http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas`
 	xmlnsWpg = `http://schemas.microsoft.com/office/word/2010/wordprocessingGroup`
+	xmlnsA   = `http://schemas.openxmlformats.org/drawingml/2006/main`
+	xmlnsPic = `http://schemas.openxmlformats.org/drawingml/2006/picture`
 
 	xmlnsRel = `http://schemas.openxmlformats.org/package/2006/relationships`
 
 	relationshipId1 = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles`
 	relationshipId2 = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme`
 	relationshipId3 = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/fontTable`
+
+	imageRelationship = `http://schemas.openxmlformats.org/officeDocument/2006/relationships/image`
 )

@@ -204,14 +204,14 @@ type outlineLvl struct {
 	Val     int      `xml:"w:val,attr"`
 }
 
-// StyleName 自定义格式名称
-type StyleName struct {
+// styleName 自定义格式名称
+type styleName struct {
 	XMLName xml.Name `xml:"w:name,omitempty"`
 	Val     string   `xml:"w:val,attr"`
 }
 
 // w:qFormat
-type Format struct {
+type format struct {
 	XMLName xml.Name `xml:"w:qFormat,omitempty"`
 }
 

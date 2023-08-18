@@ -1,12 +1,13 @@
 package shared
 
 const (
-	twipPerInch  = 1440
-	twipPerCm    = 567
-	twipPerMm      = 5670
-	twipPerPt      = 20
+	twipPerInch = 1440
+	twipPerCm   = 567
+	twipPerMm   = 5670
+	twipPerPt   = 20
 	twipPerLine = 313
 	twipPerChar = 100
+	emusPerTwip = 635
 )
 
 // Twip xml长度单位
@@ -49,4 +50,19 @@ func Ln(ln float64) (twip Twip) {
 // Char 字符
 func Char(char int) (twip Twip) {
 	return Twip(char * twipPerChar)
+}
+
+// Int twip 转 int
+func (t Twip) Int() int {
+	return int(t)
+}
+
+// Int64 twip 转 int64
+func (t Twip) Int64() int64 {
+	return int64(t)
+}
+
+// Emus twip 转 英国公制单位
+func (t Twip) Emus() Twip {
+	return t * emusPerTwip
 }
